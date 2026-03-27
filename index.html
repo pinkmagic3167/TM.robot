@@ -1,0 +1,478 @@
+
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<style>
+#messages
+{
+background-color:yellow;
+font-size:3;
+font-weight:bold;
+line-height:140%;
+}
+#status
+{
+background-color:red;
+font-size:4;
+font-weight:bold;
+color:white;
+line-height:140%;
+}
+
+
+</style>
+
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.js" type="text/javascript"></script>
+<style>
+    .button {
+      background-color: #4CAF50; /* Green */
+      border: none;
+      color: white;
+      padding: 15px 32px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      margin: 4px 2px;
+      cursor: pointer;
+      -webkit-transition-duration: 0.4s; /* Safari */
+      transition-duration: 0.4s;
+    }
+    
+    .button3 {
+      background-color: #FF6600; /* Green */
+      border: none;
+      color: white;
+      padding: 15px 32px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 18px;
+      margin: 4px 2px;
+      cursor: pointer;
+      -webkit-transition-duration: 0.4s; /* Safari */
+      transition-duration: 0.4s;
+    }
+    
+    .button1 {
+      box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+    }
+    
+    .button2:hover {
+      box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
+    }
+
+    /* SWITCH */
+    body {
+text-align: center;
+}
+.cube-switch {
+border-radius:10px;
+border:1px solid rgba(0,0,0,0.4);
+box-shadow: 0 0 8px rgba(0,0,0,0.6), inset 0 100px 50px rgba(255,255,255,0.1);
+/* Prevents clics on the back */
+cursor:default;    
+display: none;
+height: 75px;
+position: relative;
+overflow:hidden;
+/* Prevents clics on the back */
+pointer-events:none;
+width: 75px;
+white-space: nowrap;
+background:#333;
+margin: 15px;
+}
+/* The switch */
+.cube-switch .switch {
+border:1px solid rgba(0,0,0,0.6);
+border-radius:0.7em;
+box-shadow:
+inset 0 1px 0 rgba(255,255,255,0.3),
+inset 0 -7px 0 rgba(0,0,0,0.2),
+inset 0 50px 10px rgba(0,0,0,0.2),
+0 1px 0 rgba(255,255,255,0.2);
+display:block;
+width: 60px;
+height: 60px;
+margin-left:-30px;
+margin-top:-30px;
+position:absolute;
+top: 50%;
+left: 50%;
+width: 60px;
+
+background:#666;
+transition: all 0.2s ease-out;
+/* Allows click */
+cursor:pointer;
+pointer-events:auto;
+}
+/* SWITCH Active State */
+.cube-switch.active {
+background:#222;
+box-shadow:
+0 0 5px rgba(0,0,0,0.5),
+inset 0 50px 50px rgba(55,55,55,0.1);
+}
+
+
+
+.cube-switch.nonactive .switch {
+background:#c0c0c0;
+box-shadow:
+inset 0 6px 0 rgba(255,255,255,0.1),
+inset 0 7px 0 rgba(0,0,0,0.2),
+inset 0 -50px 10px rgba(0,0,0,0.1),
+0 1px 0 rgba(205,205,205,0.1);
+}
+.cube-switch.active .switch {
+background:#ff0000; 
+box-shadow:
+inset 0 6px 0 rgba(255,255,255,0.1),
+inset 0 7px 0 rgba(0,0,0,0.2),
+inset 0 -50px 10px rgba(0,0,0,0.1),
+0 1px 0 rgba(205,205,205,0.1);
+}
+.cube-switch.active:after,
+.cube-switch.active:before {
+background:#ff0000;  
+box-shadow:
+0 1px 0 rgba(255,255,255,0.1),
+inset 1px 2px 1px rgba(0,0,0,0.5),
+inset 3px 6px 2px rgba(200,200,200,0.1),
+inset -1px -2px 1px rgba(0,0,0,0.3);
+}
+.cube-switch.active .switch:after,
+.cube-switch.active .switch:before {
+background:#222;
+border:none;
+margin-top:0;
+height:1px;
+}
+.cube-switch .switch-state {
+display: block;
+position: absolute;
+left: 40%;
+color: #FFF;
+font-size: .5em;
+text-align: center;
+}
+/* SWITCH On State */
+.cube-switch .switch-state.on {
+bottom: 15%;
+}
+/* SWITCH Off State */
+.cube-switch .switch-state.off {
+top: 15%;
+}
+    </style>
+
+<script>
+ 
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.js" type="text/javascript"></script>
+ 	<script type = "text/javascript" 
+         src = "https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script type = "text/javascript">
+
+
+var stopic= "temp_display"; 	
+// var host="broker.mqtt-dashboard.com"
+  var host="mqttgo.io"
+var topic = "temp_display";
+var vname = "205";
+// mqtt.send(message);
+
+
+function onConnectxxx() {
+  
+  document.getElementById("cube-switch").className = "cube-switch nonactive";
+		document.getElementById("cube-switch").style.display = "block";
+       
+   //document.getElementById("cube-switch1").className = "cube-switch nonactive";
+	//	document.getElementById("cube-switch1").style.display = "block";       
+       
+   
+    
+
+  
+ //   document.getElementById("cube-switch4").className = "cube-switch nonactive";
+	//	document.getElementById("cube-switch4").style.display = "block";
+
+
+
+        mqtt.send(stopic, vname+"H00"); 
+  
+
+}
+
+
+function switchPress(){
+		if(document.getElementById("cube-switch").className == "cube-switch active"){
+       mqtt.send(stopic,vname+"AOFF"); 
+		}else if(document.getElementById("cube-switch").className == "cube-switch"){
+      mqtt.send(stopic, vname+"AON"); 
+		}
+	}
+
+  //function switchPress1(){
+	//	if(document.getElementById("cube-switch1").className == "cube-switch active"){
+   //         mqtt.send(stopic, vname+"BOFF"); 
+	//	}else if(document.getElementById("cube-switch1").className == "cube-switch"){
+    //  mqtt.send(stopic, vname+"BON"); 
+	//	}
+	//}
+
+  
+  
+/*
+  function switchPress4(){
+		if(document.getElementById("cube-switch4").className == "cube-switch active"){
+      mqtt.send(stopic, vname+"EOFF"); 
+		}else if(document.getElementById("cube-switch4").className == "cube-switch"){
+      mqtt.send(stopic,  vname+"EON"); 
+		}
+	}*/
+  
+	
+
+
+
+
+
+	function onConnectionLost(){
+	console.log("connection lost");
+	document.getElementById("status").innerHTML = "Connection Lost";
+	document.getElementById("messages").innerHTML ="Connection Lost";
+	connected_flag=0;
+	}
+ 
+	function onFailure(message) {
+		console.log("Failed");
+		document.getElementById("messages").innerHTML = "Connection Failed- Retrying";
+        setTimeout(MQTTconnect, reconnectTimeout);
+        }
+
+
+		function onMessageArrived(r_message){
+		out_msg="Message received "+r_message.payloadString+"<br>";
+		out_msg=out_msg+"Message received Topic "+r_message.destinationName;
+		//console.log("Message received ",r_message.payloadString);
+		//console.log(out_msg);
+		document.getElementById("messages").innerHTML =out_msg;
+
+
+        if(r_message.payloadString.substring(0,6)==vname+'1ON'){
+			document.getElementById("cube-switch").className = "cube-switch active";
+		}else if(r_message.payloadString.substring(0,7)==vname+'1OFF'){
+			document.getElementById("cube-switch").className = "cube-switch";
+		}
+ 
+  //  if(r_message.payloadString.substring(0,6)==vname+'2ON'){
+	//		document.getElementById("cube-switch1").className = "cube-switch active";
+	//	}else if(r_message.payloadString.substring(0,7)==vname+'2OFF'){
+	//		document.getElementById("cube-switch1").className = "cube-switch";
+	//	}
+
+       
+ 
+   
+
+
+    
+    if(r_message.payloadString.substring(0,6)==vname+'5ON'){
+			document.getElementById("cube-switch4").className = "cube-switch active";
+		}else if(r_message.payloadString.substring(0,7)==vname+'5OFF'){
+			document.getElementById("cube-switch4").className = "cube-switch";
+		}
+
+
+
+        if(r_message.payloadString.substring(0,5)==vname+'D1')
+         document.getElementById("sak11").innerHTML = 'Time ='+r_message.payloadString.substring(5,20);
+
+         if(r_message.payloadString.substring(0,5)==vname+'D2')
+         document.getElementById("sak12").innerHTML = 'Temp1 ='+r_message.payloadString.substring(5,20);
+
+         if(r_message.payloadString.substring(0,5)==vname+'D3')
+         document.getElementById("sak13").innerHTML = 'Temp2 ='+r_message.payloadString.substring(5,20);
+
+		}
+	function onConnected(recon,url){
+	console.log(" in onConnected " +reconn);
+	}
+
+
+	function onConnect() {
+	  // Once a connection has been made, make a subscription and send a message.
+	document.getElementById("messages").innerHTML ="Connected to555 "+host +"on port "+port;
+	connected_flag=1
+	document.getElementById("status").innerHTML = "Connected";
+	console.log("on Connect "+connected_flag);
+	 
+    sub_topics();
+    var msg = "";
+
+	//	console.log(msg);
+
+    message = new Paho.MQTT.Message(msg);
+    message.destinationName = topic;
+   mqtt.send(message);
+   onConnectxxx();
+	  }
+
+
+
+      function beginconnect()
+      {
+
+
+        
+        MQTTconnect()
+     
+
+
+      }
+
+
+
+
+    function MQTTconnect() {
+	document.getElementById("messages").innerHTML ="";
+
+	
+//	console.log("ports");
+
+		port=8000;
+//		console.log("port" +port);
+		
+
+	
+//		console.log("host");
+		
+//	console.log("connecting to "+ host +" "+ port);
+	var x=Math.floor(Math.random() * 10000); 
+	var cname="orderform-"+x;
+	mqtt = new Paho.MQTT.Client(host,port,cname);
+	//document.write("connecting to "+ host);
+	var options = {
+        timeout: 3,
+		onSuccess: onConnect,
+		onFailure: onFailure,
+       
+     };
+	
+        mqtt.onConnectionLost = onConnectionLost;
+        mqtt.onMessageArrived = onMessageArrived;
+		//mqtt.onConnected = onConnected;
+
+	mqtt.connect(options);
+	return false;
+   
+	}
+	function sub_topics(){
+		document.getElementById("messages").innerHTML ="";
+  
+	console.log("Subscribing to topic ="+stopic);
+ 
+	mqtt.subscribe(stopic);
+   
+     
+  
+
+	return false;
+	}
+
+
+
+ 
+
+
+  
+	function send_message(msg,var1){ 
+	
+		var value=msg.value;
+    //alert(var1);
+		console.log("value= "+value);		 
+    if (var1=='1')  	message = new Paho.MQTT.Message("M1"+value);
+    if (var1=='2')  	message = new Paho.MQTT.Message("M2"+value);
+    if (var1=='3')  	message = new Paho.MQTT.Message("M3"+value);
+    if (var1=='4')  	message = new Paho.MQTT.Message("M4"+value);
+		message.destinationName = topic;
+		mqtt.send(message);
+		return false;
+	}
+    </script>
+
+  </head>
+  <body onload="MQTTconnect()">
+    <h1>Websockets Using JavaScript MQTT Client</h1>
+	
+	    <script type = "text/javascript">
+//ll
+
+</script>
+	<script>
+	var connected_flag=0	
+	var mqtt;
+    var reconnectTimeout = 2000;
+ 
+	</script>
+ 
+<div id="status">Connection Status: Not Connected</div>
+</div>
+<br>
+	 
+ 
+ 
+<hr>
+<body>  
+      
+
+    <table border="1" cellpadding="0" cellspacing="0" width="100%">
+        
+    
+
+    
+      <tr><td width="173" bgcolor="#33FFFF"><div align="center">ON/OFF
+    
+      
+        <div href="" class="cube-switch" id="cube-switch" onclick="switchPress()">
+            <div align="center"><span class="switch">
+              <span class="switch-state off">Off</span>
+              <span class="switch-state on">On</span> </span> </div>
+        </div>
+  </div>
+        </td>
+      
+      
+    
+    
+    
+ <!--
+  <td width="242" bgcolor="#0099FF"> sw 4
+      <div href="" class="cube-switch" id="cube-switch4" onclick="switchPress4()">
+           <span class="switch">
+               <span class="switch-state off">Off</span>  
+               <span class="switch-state on">On</span>            </span> 
+			   
+			    </div>   
+	 </td> -->
+       
+    <td width="143"> <h2>
+	
+	<div id="sak11" >   
+      <div align="center">data </div>
+    </div> 
+        <div id="sak12" >   </div> 
+        <div id="sak13" >   </div> 
+        <div id="sak14" >   </div> </h2>   </td> 
+    </tr>  
+    </table>
+     
+Messages:<p id="messages"></p>
+
+  </body>
+</html>
