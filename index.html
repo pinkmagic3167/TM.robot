@@ -180,7 +180,7 @@ top: 15%;
 
 var stopic= "temp_display"; 	
 // var host="broker.mqtt-dashboard.com"
-  var host="mqttgo.io"
+  var host="broker.hivemq.com"
 var topic = "temp_display";
 var vname = "205";
 // mqtt.send(message);
@@ -345,7 +345,7 @@ function switchPress(){
 	
 //	console.log("ports");
 
-		port=8000;
+		port=8884;
 //		console.log("port" +port);
 		
 
@@ -358,11 +358,11 @@ function switchPress(){
 	mqtt = new Paho.MQTT.Client(host,port,cname);
 	//document.write("connecting to "+ host);
 	var options = {
-        timeout: 3,
-		onSuccess: onConnect,
-		onFailure: onFailure,
-       
-     };
+    timeout: 3,
+    useSSL: true,
+    onSuccess: onConnect,
+    onFailure: onFailure,
+};
 	
         mqtt.onConnectionLost = onConnectionLost;
         mqtt.onMessageArrived = onMessageArrived;
